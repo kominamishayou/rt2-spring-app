@@ -12,8 +12,13 @@
 		<form th:action="@{/regist/check}" method="post" th:object="${employeeForm}">
 			<div class="form">
 				<div class="label">パスワード：</div>
+				
 				<div class="input required">
-					<input type="password" th:field="*{empPass}" />
+					<input type="password" th:field="*{empPass}" />	
+					
+					<th:block  th:if="${#fields.hasErrors('empPass')}">
+						<br><span th:errors="*{empPass}"></span>
+					</th:block>
 				</div>
 			</div>
 			

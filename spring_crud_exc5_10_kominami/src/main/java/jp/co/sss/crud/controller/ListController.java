@@ -78,6 +78,7 @@ public class ListController {
 		searchByDepartmentList = searchForEmployeesByDepartmentService.execute(deptId);
 
 		model.addAttribute("employees", searchByDepartmentList);
+		model.addAttribute("selectedDeptId", deptId);
 		return "list/list";
 	}
 }
