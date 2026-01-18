@@ -2,9 +2,12 @@ package jp.co.sss.crud.controller;
 
 import java.text.ParseException;
 
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,8 +60,13 @@ public class UpdateController {
 	 * @return 遷移先のビュー
 	 */
 	@RequestMapping(path = "/update/check", method = RequestMethod.POST)
-	public String checkUpdate(@ModelAttribute EmployeeForm employeeForm) {
-
+	public String checkUpdate(
+			@Valid @ModelAttribute EmployeeForm employeeForm,
+			BindingResult result) {
+		if(result.hasErrors()) {
+			return "update/update_input";
+		}
+		
 		return "update/update_check";
 	}
 

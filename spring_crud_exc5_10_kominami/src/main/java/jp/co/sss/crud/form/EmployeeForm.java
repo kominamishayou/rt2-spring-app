@@ -2,35 +2,46 @@ package jp.co.sss.crud.form;
 
 import java.util.Date;
 
-import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class EmployeeForm {
 	/** 社員ID */
 	private Integer empId;
 
 	/** パスワード */
-	@NotNull
-	@Max(value = 16)
+	@NotBlank
+	@Size(min = 1, max = 16)
 	private String empPass;
 
 	/** 社員名 */
-	@NotNull
+	@NotBlank
+	@Size(min = 1, max = 30)
 	private String empName;
 
 	/** 性別 */
+	@NotNull
 	private Integer gender;
 
 	/** 住所 */
+	@NotBlank
+	@Size(min = 1, max = 60)
 	private String address;
 
 	/** 生年月日 */
+	@NotNull
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private Date birthday;
 
 	/** 権限 */
+	@NotNull
 	private Integer authority;
 
 	/** 部署ID */
+	@NotNull
 	private Integer deptId;
 
 	/**

@@ -26,6 +26,9 @@
 				<div class="label">社員名：</div>
  				<div class="input required">
 					<input type="text" th:field="*{empName}" />
+					<th:block  th:if="${#fields.hasErrors('empName')}">
+						<br><span th:errors="*{empName}"></span>
+					</th:block>
 				</div>
 			</div>
 			
@@ -41,6 +44,10 @@
 				<div class="label">住所：</div>
 				<div class="input required">
 					<input type="text" th:field="*{address}" />
+					
+					<th:block  th:if="${#fields.hasErrors('address')}">
+						<br><span th:errors="*{address}"></span>
+					</th:block>
 				</div>
 			</div>
 			
@@ -48,6 +55,9 @@
 				<div class="label">生年月日：(YYYY/MM/DD)</div>
 				<div class="input required">
 					<input type="text" th:field="*{birthday}" />
+					<th:block  th:if="${#fields.hasErrors('birthday')}">
+						<br><span th:errors="*{birthday}"></span>
+					</th:block>
 				</div>
 			</div>
 
