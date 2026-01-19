@@ -28,7 +28,7 @@ public class AuthorityCheckFilter extends HttpFilter {
 			HttpSession session = request.getSession();
 			EmployeeBean loginUser = (EmployeeBean)session.getAttribute("loginUser");
 			if( (loginUser.getAuthority().equals(Constant.DEFAULT_AUTHORITY))) {
-				response.sendRedirect("/spring_crud/list");
+				response.sendRedirect("/spring_crud");
 				return;
 			}
 		}
