@@ -10,7 +10,7 @@
 	<h3>社員一覧画面</h3>
 
 	<div class="regist_link">
-		<a th:href="@{/regist/input}">新規社員登録</a>
+		<a th:unless="${session.loginUser.authority == 1}" th:href="@{/regist/input}">新規社員登録</a>
 	</div>
 
 	<!--	該当社員が0名の場合-->
@@ -27,13 +27,13 @@
 		<tr>
 			<th>社員ID</th>
 			<th>社員名</th>
-			<th class="gender">性別</th>
-			<th class="address">住所</th>
-			<th class="birthday">生年月日</th>
-			<th class="authority">権限</th>
+			<th th:unless="${session.loginUser.authority == 1}" class="gender">性別</th>
+			<th th:unless="${session.loginUser.authority == 1}" class="address">住所</th>
+			<th th:unless="${session.loginUser.authority == 1}" class="birthday">生年月日</th>
+			<th th:unless="${session.loginUser.authority == 1}" class="authority">権限</th>
 			<th class="deptName">部署名</th>
-			<th class="button">変更</th>
-			<th class="button">削除</th>
+			<th th:unless="${session.loginUser.authority == 1}" class="button">変更</th>
+			<th th:unless="${session.loginUser.authority == 1}" class="button">削除</th>
 		</tr>
 		<tr th:each="employee: ${employees}">
 			<td th:text="${employee.empId}"></td>
@@ -42,22 +42,22 @@
 				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
 				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
 			-->
-			<td th:switch="${employee.gender}">
+			<td th:unless="${session.loginUser.authority == 1}" th:switch="${employee.gender}">
 				<span th:case="1">男性</span> <span th:case="2">女性</span>
 			</td>
-			<td th:text="${employee.address}"></td>
-			<td th:text="${#dates.format(employee.birthday, 'yyyy/MM/dd')}"></td>
-			<td th:switch="${employee.authority}">
+			<td th:unless="${session.loginUser.authority == 1}" th:text="${employee.address}"></td>
+			<td th:unless="${session.loginUser.authority == 1}" th:text="${#dates.format(employee.birthday, 'yyyy/MM/dd')}"></td>
+			<td th:unless="${session.loginUser.authority == 1}" th:switch="${employee.authority}">
 				<span th:case="1">一般</span> <span th:case="2">管理者</span>
 			</td>
 			<td th:text="${employee.deptName}"></td>
-			<td>
+			<td th:unless="${session.loginUser.authority == 1}">
 				<form method="get" th:action="@{/update/input}">
 					<input type="hidden" name="empId" th:value="${employee.empId}" />
 					<input type="submit" value="変更" />
 				</form>
 			</td>
-			<td>
+			<td th:unless="${session.loginUser.authority == 1}">
 				<form method="get" th:action="@{/delete/check}">
 					<input type="hidden" name="empId" th:value="${employee.empId}" />
 					<input type="submit" value="削除" class="delete" />

@@ -1,30 +1,38 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{common/layout_4block :: layout(~{::body/content()})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/layout_4block :: layout(~{::body/content()})}">
+
 <head>
-<title>会員変更入力 | シェアードショップ</title>
-<meta charset="UTF-8" />
+	<title>会員変更入力 | シェアードショップ</title>
+	<meta charset="UTF-8" />
 </head>
+
 <body th:object="${userForm}" class="admin user_update_input_admin">
 	<h3>社員変更入力画面</h3>
-	
+
 	<div class="update">
 		<form th:action="@{/update/check}" method="post" th:object="${employeeForm}">
-	
+
 			<div class="form">
 				<div class="label">パスワード：</div>
 				<div class="input required">
 					<input type="password" th:field="*{empPass}" />
+					<th:block th:if="${#fields.hasErrors('empPass')}">
+						<br><span th:errors="*{empPass}"></span>
+					</th:block>
 				</div>
+
 			</div>
-			
+
 			<div class="form">
 				<div class="label">社員名：</div>
 				<div class="input required">
 					<input type="text" th:field="*{empName}" />
+					<th:block th:if="${#fields.hasErrors('empName')}">
+						<br><span th:errors="*{empName}"></span>
+					</th:block>
 				</div>
 			</div>
-			
+
 			<div class="form">
 				<div class="label">性別：</div>
 				<div class="input">
@@ -32,29 +40,37 @@
 					<input type="radio" th:field="*{gender}" value="2" />女性
 				</div>
 			</div>
-			
+
 			<div class="form">
 				<div class="label">住所：</div>
 				<div class="input required">
 					<input type="text" th:field="*{address}" />
-				</div>
-			</div>
-			
-			<div class="form">
-				<div class="label">生年月日：(YYYY/MM/DD)</div>
-				<div class="input required">
-					<input type="text" th:field="*{birthday}" />
+					<th:block th:if="${#fields.hasErrors('address')}">
+						<br><span th:errors="*{address}"></span>
+					</th:block>
 				</div>
 			</div>
 
 			<div class="form">
+				<div class="label">生年月日：(YYYY/MM/DD)</div>
+				<div class="input required">
+					<input type="text" th:field="*{birthday}" />
+					<th:block th:if="${#fields.hasErrors('birthday')}">
+						<br><span th:errors="*{birthday}"></span>
+					</th:block>
+				</div>
+			</div>
+
+			<div th:unless="${session.loginUser.authority == 1}" class="form">
 				<div class="label">権限：</div>
 				<div class="input">
 					<input type="radio" th:field="*{authority}" value="1" />一般&nbsp;&nbsp;
 					<input type="radio" th:field="*{authority}" value="2" />管理者
 				</div>
 			</div>
-	
+
+			<input type="hidden" th:unless="${session.loginUser.authority == 2}" th:field="*{authority}" />
+
 			<div class="form">
 				<div class="label">部署名：</div>
 				<div class="input">
@@ -64,8 +80,8 @@
 						<option value="3">総務部</option>
 					</select>
 				</div>
-	        </div>
-	        
+			</div>
+
 			<div class="form">
 				<div class="label"></div>
 				<div class="input">
@@ -74,7 +90,7 @@
 				</div>
 			</div>
 		</form>
-	
+
 		<form th:action="@{/list}" name="back">
 			<div class="form">
 				<div class="label"></div>
@@ -85,4 +101,5 @@
 		</form>
 	</div>
 </body>
+
 </html>

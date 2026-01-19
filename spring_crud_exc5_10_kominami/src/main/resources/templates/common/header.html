@@ -8,7 +8,10 @@
 	<div class="content">
 		<div class="title">社員管理システム</div>
 		<div th:if="${session.loginUser != null}" class="user_info">
-			ようこそ、<span th:text="${session.loginUser.empName}"></span>さん
+			ようこそ、
+			<a th:href="@{/update/input(empId=${session.loginUser.empId})}">
+				<span th:text="${session.loginUser.empName}"></span>
+			</a>さん
 			<span class="pipeline">|</span><a th:href="@{/logout}">ログアウト</a>
 		</div>
 

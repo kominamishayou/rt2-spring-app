@@ -2,11 +2,13 @@ package jp.co.sss.crud.form;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 public class EmployeeForm {
 	/** 社員ID */
@@ -14,12 +16,13 @@ public class EmployeeForm {
 
 	/** パスワード */
 	@NotBlank
-	@Size(min = 1, max = 16)
+	@Pattern(regexp = "^[A-Za-z0-9]*$")
+	@Size(max = 16, message = "パスワードは16文字までの半角英数字で入力してください。")
 	private String empPass;
 
 	/** 社員名 */
 	@NotBlank
-	@Size(min = 1, max = 30)
+	@Size(max = 30)
 	private String empName;
 
 	/** 性別 */
@@ -28,11 +31,12 @@ public class EmployeeForm {
 
 	/** 住所 */
 	@NotBlank
-	@Size(min = 1, max = 60)
+	@Size(max = 60)
 	private String address;
 
 	/** 生年月日 */
 	@NotNull
+	@Past
 	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private Date birthday;
 

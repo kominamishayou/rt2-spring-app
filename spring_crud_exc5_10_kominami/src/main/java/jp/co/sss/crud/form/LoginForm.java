@@ -1,10 +1,20 @@
 package jp.co.sss.crud.form;
 
+import org.hibernate.validator.constraints.Range;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class LoginForm {
 	/** 社員ID */
+	@NotNull
+	@Range(min = 1, max = 99999)
 	private Integer empId;
 
 	/** パスワード */
+	@NotBlank
+	@Size(max = 16)
 	private String empPass;
 
 	/**

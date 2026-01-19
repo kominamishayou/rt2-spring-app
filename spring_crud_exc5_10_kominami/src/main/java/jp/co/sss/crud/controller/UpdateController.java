@@ -2,8 +2,6 @@ package jp.co.sss.crud.controller;
 
 import java.text.ParseException;
 
-import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,11 +10,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import jp.co.sss.crud.bean.EmployeeBean;
 import jp.co.sss.crud.form.EmployeeForm;
 import jp.co.sss.crud.service.SearchForEmployeesByEmpIdService;
 import jp.co.sss.crud.service.UpdateEmployeeService;
 import jp.co.sss.crud.util.BeanManager;
+import jp.co.sss.crud.util.Constant;
 
 @Controller
 public class UpdateController {
@@ -38,13 +39,21 @@ public class UpdateController {
 	 * @throws ParseException 
 	 */
 	@RequestMapping(path = "/update/input", method = RequestMethod.GET)
-	public String inputUpdate(Integer empId, @ModelAttribute EmployeeForm employeeForm, Model model) {
+	public String inputUpdate(Integer empId, @ModelAttribute EmployeeForm employeeForm, Model model, HttpSession session) {
 
 		EmployeeBean employee = null;
-
+		EmployeeBean loginUser = (EmployeeBean)session.getAttribute("loginUser");
+		
+		if(loginUser.getAuthority().equals(Constant.DEFAULT_AUTHORITY)) {
+			if(!loginUser.getEmpId().equals(employeeForm.getEmpId())) {
+				return "redirect:/list";
+			}
+		}
+		
 		employee = searchForEmployeesByEmpIdService.execute(empId);
 
 		employeeForm = BeanManager.copyBeanToForm(employee);
+
 		model.addAttribute("employeeForm", employee);
 
 		return "update/update_input";
@@ -63,10 +72,10 @@ public class UpdateController {
 	public String checkUpdate(
 			@Valid @ModelAttribute EmployeeForm employeeForm,
 			BindingResult result) {
-		if(result.hasErrors()) {
+		if (result.hasErrors()) {
 			return "update/update_input";
 		}
-		
+
 		return "update/update_check";
 	}
 
@@ -89,9 +98,21 @@ public class UpdateController {
 	 * @return 遷移先のビュー
 	 */
 	@RequestMapping(path = "/update/complete", method = RequestMethod.POST)
-	public String completeUpdate(EmployeeForm employeeForm) {
+	public String completeUpdate(EmployeeForm employeeForm, HttpSession session) {
 
-				updateEmployeeService.execute(employeeForm);
+		//権限が一般の時に1(一般)をセット
+		EmployeeBean loginUser = (EmployeeBean) session.getAttribute("loginUser");
+		if (loginUser.getAuthority() == Constant.DEFAULT_AUTHORITY) {
+			employeeForm.setAuthority(Constant.DEFAULT_AUTHORITY);
+		}
+
+		updateEmployeeService.execute(employeeForm);
+		
+		//ログインUserと更新対象Userが同じならセッション情報を更新
+		if (loginUser.getEmpId().equals(employeeForm.getEmpId())) {
+			EmployeeBean employeeBean = searchForEmployeesByEmpIdService.execute(employeeForm.getEmpId());
+			session.setAttribute("loginUser", employeeBean);
+		}
 
 		return "redirect:/update/complete";
 	}
