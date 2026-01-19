@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
     th:replace="~{common/layout_4block :: layout(~{::body/content()})}">
 <head>
+	<script th:src="@{/static/js/showPassword.js}"></script>
 	<title>会員登録入力 | シェアードショップ</title>
 	<meta charset="UTF-8" />
 </head>
@@ -14,8 +15,8 @@
 				<div class="label">パスワード：</div>
 				
 				<div class="input required">
-					<input type="password" th:field="*{empPass}" />	
-					
+					<input type="password" th:field="*{empPass}" />
+					<input type="checkbox" id="showPassword">パスワードを表示する</input>		
 					<th:block  th:if="${#fields.hasErrors('empPass')}">
 						<br><span th:errors="*{empPass}"></span>
 					</th:block>

@@ -6,13 +6,13 @@
 <body>
 <th:block id="header" th:fragment="layout-header">
 	<div class="content">
-		<div class="title">社員管理システム</div>
+		<div class="title">社員管理システム<span th:if="${session.loginUser != null}" th:unless="${session.loginUser.authority == 1}" style="font-size: 18px;">  (管理者画面)</div>
 		<div th:if="${session.loginUser != null}" class="user_info">
 			ようこそ、
-			<a th:href="@{/update/input(empId=${session.loginUser.empId})}">
+			<a th:classappend="${session.loginUser.authority == 2} ? 'admin-style' : ''" th:href="@{/update/input(empId=${session.loginUser.empId})}">
 				<span th:text="${session.loginUser.empName}"></span>
 			</a>さん
-			<span class="pipeline">|</span><a th:href="@{/logout}">ログアウト</a>
+			<span class="pipeline">|</span><a th:classappend="${session.loginUser.authority == 2} ? 'admin-style' : ''" th:href="@{/logout}">ログアウト</a>
 		</div>
 
 	</div>

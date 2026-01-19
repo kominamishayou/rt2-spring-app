@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(body)">
+
 <head lang="ja">
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
-<link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
-<title>社員管理システム</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
+	<title>社員管理システム</title>
 </head>
+
 <body>
 	<!--/* ヘッダー */-->
-	<header >
+	<header th:classappend="${session.loginUser != null and session.loginUser.authority == 2} ? 'admin-style' : ''">
 		<div th:replace="~{common/header :: layout-header}"></div>
 	</header>
 
@@ -19,8 +21,9 @@
 	</div>
 
 	<!--/* フッター */-->
-	<footer>
+	<footer th:classappend="${session.loginUser != null and session.loginUser.authority == 2} ? 'admin-style' : ''">
 		<div th:replace="~{common/footer :: layout-footer}"></div>
 	</footer>
 </body>
+
 </html>
