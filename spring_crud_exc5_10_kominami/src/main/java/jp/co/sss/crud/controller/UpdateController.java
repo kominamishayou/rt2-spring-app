@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jp.co.sss.crud.bean.EmployeeBean;
 import jp.co.sss.crud.form.EmployeeForm;
+import jp.co.sss.crud.service.IsAdmin;
+import jp.co.sss.crud.service.IsLoginUsersId;
 import jp.co.sss.crud.service.SearchForEmployeesByEmpIdService;
 import jp.co.sss.crud.service.UpdateEmployeeService;
 import jp.co.sss.crud.util.BeanManager;
@@ -27,6 +29,12 @@ public class UpdateController {
 
 	@Autowired
 	UpdateEmployeeService updateEmployeeService;
+	
+	@Autowired
+	IsAdmin isAdmin;
+	
+	@Autowired
+	IsLoginUsersId isLoginUsersId;
 
 	/**
 	 * 社員情報の変更内容入力画面を出力
@@ -41,21 +49,13 @@ public class UpdateController {
 	@RequestMapping(path = "/update/input", method = RequestMethod.GET)
 	public String inputUpdate(Integer empId, @ModelAttribute EmployeeForm employeeForm, Model model, HttpSession session) {
 
-		EmployeeBean employee = null;
-		EmployeeBean loginUser = (EmployeeBean)session.getAttribute("loginUser");
-		
-		if(loginUser.getAuthority().equals(Constant.DEFAULT_AUTHORITY)) {
-			if(!loginUser.getEmpId().equals(employeeForm.getEmpId())) {
-				return "redirect:/list";
-			}
+		//権限が一般かつ、ログインユーザー以外の変更ページにアクセスしていた場合リダイレクト
+		if(!isAdmin.execute(session) && !isLoginUsersId.execute(session, empId)) {
+			return "redirect:/list";
 		}
 		
-		employee = searchForEmployeesByEmpIdService.execute(empId);
-
-		employeeForm = BeanManager.copyBeanToForm(employee);
-
-		model.addAttribute("employeeForm", employee);
-
+		EmployeeBean employeeBean =  searchForEmployeesByEmpIdService.execute(empId);;
+		model.addAttribute("employeeForm", employeeForm = BeanManager.copyBeanToForm(employeeBean));
 		return "update/update_input";
 	}
 
@@ -101,15 +101,14 @@ public class UpdateController {
 	public String completeUpdate(EmployeeForm employeeForm, HttpSession session) {
 
 		//権限が一般の時に1(一般)をセット
-		EmployeeBean loginUser = (EmployeeBean) session.getAttribute("loginUser");
-		if (loginUser.getAuthority() == Constant.DEFAULT_AUTHORITY) {
+		if (!isAdmin.execute(session)) {
 			employeeForm.setAuthority(Constant.DEFAULT_AUTHORITY);
 		}
 
 		updateEmployeeService.execute(employeeForm);
 		
 		//ログインUserと更新対象Userが同じならセッション情報を更新
-		if (loginUser.getEmpId().equals(employeeForm.getEmpId())) {
+		if (isLoginUsersId.execute(session, employeeForm.getEmpId())) {
 			EmployeeBean employeeBean = searchForEmployeesByEmpIdService.execute(employeeForm.getEmpId());
 			session.setAttribute("loginUser", employeeBean);
 		}
