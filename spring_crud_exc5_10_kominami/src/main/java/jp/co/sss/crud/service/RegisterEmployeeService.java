@@ -1,6 +1,7 @@
 package jp.co.sss.crud.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jp.co.sss.crud.form.EmployeeForm;
@@ -26,6 +27,9 @@ public class RegisterEmployeeService {
 	@Autowired
 	EmployeeRepository employeeRepository;
 	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
 	/**
 	 * 新規従業員を登録します。
 	 * 
@@ -36,6 +40,7 @@ public class RegisterEmployeeService {
 	 * @param employeeForm 登録する従業員情報を格納したフォームオブジェクト
 	 */
 	public void execute(EmployeeForm employeeForm) {
+		employeeForm.setEmpPass(passwordEncoder.encode(employeeForm.getEmpPass()));
 		employeeRepository.save(BeanManager.copyFormToEntity(employeeForm));
 		return;
 	}

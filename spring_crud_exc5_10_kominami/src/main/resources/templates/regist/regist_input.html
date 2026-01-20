@@ -1,38 +1,83 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-    th:replace="~{common/layout_4block :: layout(~{::body/content()})}">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/layout_4block :: layout(~{::body/content()})}">
+
 <head>
-	<script th:src="@{/static/js/showPassword.js}"></script>
 	<title>会員登録入力 | シェアードショップ</title>
 	<meta charset="UTF-8" />
 </head>
+
 <body class="admin user_regist_input_admin">
 	<h3>社員登録入力画面</h3>
-	
+
 	<div class="update">
-		<form th:action="@{/regist/check}" method="post" th:object="${employeeForm}">
+		<form th:action="@{/regist/check}" method="post" th:object="${employeeForm}"  id="form">
+
 			<div class="form">
 				<div class="label">パスワード：</div>
-				
+
 				<div class="input required">
 					<input type="password" th:field="*{empPass}" />
-					<input type="checkbox" id="showPassword">パスワードを表示する</input>		
-					<th:block  th:if="${#fields.hasErrors('empPass')}">
-						<br><span th:errors="*{empPass}"></span>
+					<button type="button" onclick="changeType()" style="white-space: nowrap;">
+						表示切替
+					</button>
+					<th:block th:if="${#fields.hasErrors('empPass')}">
+						<br><span th:errors="*{empPass}" style="white-space: nowrap;"></span>
 					</th:block>
+					<span id="different_password_error_msg" style="display: none;">パスワードが確認欄と一致していません</span>
 				</div>
+
 			</div>
-			
+			<div class="form" id="password_confirm" style="display: none;">
+				<div class="label">パスワード：確認</div>
+
+				<div class="input required">
+					<input type="password" id="password_confirm_input"/>
+					<button type="button" onclick="changeTypeConfirm()" style="white-space: nowrap;">
+						表示切替
+					</button>
+				</div>
+				<script>
+					function changeTypeConfirm() {
+						const confirmInput = document.getElementById("password_confirm_input");
+						if (confirmInput.type == "password") {
+							confirmInput.type = "text";
+						} else {
+							confirmInput.type = "password";
+						}
+					}
+				</script>
+			</div>
+				<script>
+					function changeType() {
+						const input = document.getElementById("empPass");
+						if (input.type == "password") {
+							input.type = "text";
+						} else {
+							input.type = "password";
+						}
+					}
+				</script>
+
+				<script>
+					const input = document.getElementById("empPass");
+					const confirm = document.getElementById("password_confirm");
+					input.addEventListener("input", () => {
+						if (input.value.length >= 1) {
+							confirm.style.display = "flex";
+						}
+					})
+				</script>
+
 			<div class="form">
 				<div class="label">社員名：</div>
- 				<div class="input required">
+				<div class="input required">
 					<input type="text" th:field="*{empName}" />
-					<th:block  th:if="${#fields.hasErrors('empName')}">
+					<th:block th:if="${#fields.hasErrors('empName')}">
 						<br><span th:errors="*{empName}"></span>
 					</th:block>
 				</div>
 			</div>
-			
+
 			<div class="form">
 				<div class="label">性別：</div>
 				<div class="input">
@@ -40,23 +85,23 @@
 					<input type="radio" th:field="*{gender}" value="2" />女性
 				</div>
 			</div>
-			
+
 			<div class="form">
 				<div class="label">住所：</div>
 				<div class="input required">
 					<input type="text" th:field="*{address}" />
-					
-					<th:block  th:if="${#fields.hasErrors('address')}">
+
+					<th:block th:if="${#fields.hasErrors('address')}">
 						<br><span th:errors="*{address}"></span>
 					</th:block>
 				</div>
 			</div>
-			
+
 			<div class="form">
 				<div class="label">生年月日：(YYYY/MM/DD)</div>
 				<div class="input required">
 					<input type="text" th:field="*{birthday}" />
-					<th:block  th:if="${#fields.hasErrors('birthday')}">
+					<th:block th:if="${#fields.hasErrors('birthday')}">
 						<br><span th:errors="*{birthday}"></span>
 					</th:block>
 				</div>
@@ -80,15 +125,29 @@
 					</select>
 				</div>
 			</div>
-			
+
 			<div class="form">
 				<div class="label"></div>
 				<div class="input">
-					<input type="submit" value="登録" />
+					<input onclick="checkPassword()" type="button" value="登録"/>
 				</div>
+				<script>
+					const errMsg = document.getElementById("different_password_error_msg");
+					const submitButton = document.getElementById("form");
+					const confirmInput = document.getElementById("password_confirm_input");
+					function checkPassword(){
+					const inputPass = input.value;
+					const confirmPass = confirmInput.value;
+						if(inputPass == confirmPass){
+							submitButton.submit();
+						} else {
+						errMsg.style.display="inline";
+						}
+					}
+				</script>
 			</div>
 		</form>
-		
+
 		<form th:action="@{/list}" name="back">
 			<div class="form">
 				<div class="label"></div>
@@ -97,6 +156,7 @@
 				</div>
 			</div>
 		</form>
-    </div>
+	</div>
 </body>
+
 </html>

@@ -2,6 +2,7 @@ package jp.co.sss.crud.service;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jp.co.sss.crud.bean.EmployeeBean;
@@ -27,9 +28,11 @@ public class LoginService {
 	 * 従業員データアクセス用リポジトリ。
 	 * Spring DIによって自動注入されます。
 	 */
-	//TODO ここに記述
 	@Autowired
 	private EmployeeRepository employeeRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	/**
 	 * ログイン認証処理を実行します。
 	 * 
@@ -48,12 +51,18 @@ public class LoginService {
 	 *         </ul>
 	 */
 	public LoginResultBean execute(LoginForm loginForm) {
-		Employee employee = employeeRepository.findByEmpIdAndEmpPass(loginForm.getEmpId(), loginForm.getEmpPass());
+		Employee employee = employeeRepository.findById(loginForm.getEmpId()).orElse(null);
 		EmployeeBean employeeBean = new EmployeeBean();
 		
 		if(employee == null) {
 			return LoginResultBean.failLogin("社員ID、またはパスワードが間違っています。");
-		}
+		} else if(!passwordEncoder.matches(loginForm.getEmpPass(), employee.getEmpPass())) {
+			return LoginResultBean.failLogin("社員ID、またはパスワードが間違っています。");
+		};
+		
+//		if(employee == null) {
+//			return LoginResultBean.failLogin("社員ID、またはパスワードが間違っています。");
+//		}
 		
 		//エンティティをBeanにマッピング
 		BeanUtils.copyProperties(employee, employeeBean);

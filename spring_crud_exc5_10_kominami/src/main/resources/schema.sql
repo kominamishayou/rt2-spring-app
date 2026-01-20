@@ -7,7 +7,7 @@ CREATE TABLE department  (
 -- 社員テーブルの作成
 CREATE TABLE employee (
   emp_id NUMBER(5) PRIMARY KEY,
-  emp_pass VARCHAR(16 CHARACTERS) NOT NULL,
+  emp_pass VARCHAR(255 CHARACTERS) NOT NULL,
   emp_name VARCHAR(30 CHARACTERS) NOT NULL,
   gender NUMBER(1) NOT NULL,
   address VARCHAR(60 CHARACTERS) NOT NULL,
