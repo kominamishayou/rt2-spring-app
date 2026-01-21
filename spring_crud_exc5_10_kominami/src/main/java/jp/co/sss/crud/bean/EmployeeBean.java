@@ -124,6 +124,13 @@ public class EmployeeBean {
 		this.empPass = empPass;
 	}
 
+	@Override
+	public String toString() {
+		return "EmployeeBean [empId=" + empId + ", empPass=" + empPass + ", empName=" + empName + ", gender=" + gender
+				+ ", address=" + address + ", birthday=" + birthday + ", authority=" + authority + ", deptId=" + deptId
+				+ ", deptName=" + deptName + "]";
+	}
+
 	/**
 	 * 従業員名を取得します。
 	 * 

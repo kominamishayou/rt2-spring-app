@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/layout_4block :: layout(~{::body/content()})}">
+
+<head>
+	<title>社員一覧 | 社員管理システム</title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="admin user_list">
+
+<h1>登録確認</h1>
+	<form th:action="@{/csv/improt/regist/check}" method="post" th:object="${employeeForm}">
+		<div class="form">
+						<div class="label">初期パスワード：</div>
+
+						<div class="input required">
+							<input type="password" th:field="*{empPass}" />
+							<button type="button" onclick="changeType()" style="white-space: nowrap;">
+								表示切替
+							</button>
+							<th:block th:if="${#fields.hasErrors('empPass')}">
+								<br><span th:errors="*{empPass}" style="white-space: nowrap;"></span>
+							</th:block>
+							<span id="different_password_error_msg" style="display: none;">パスワードが確認欄と一致していません</span>
+						</div>
+
+					</div>
+					<div class="form" id="password_confirm" style="display: none;">
+						<div class="label">初期パスワード：確認</div>
+
+						<div class="input required">
+							<input type="password" id="password_confirm_input"/>
+							<button type="button" onclick="changeTypeConfirm()" style="white-space: nowrap;">
+								表示切替
+							</button>
+						</div>
+					</div>
+					
+					<div class="form">
+						<div class="label"></div>
+						<div class="input">
+							<input onclick="checkPassword()" type="button" value="登録"/>
+						</div>
+					</div>
+	</form>
+</form>
+</html>
+</body>

@@ -23,9 +23,14 @@
 	font-size: 15px;
 }
 
+.emp-id-td {
+	text-align: center;
+}
+
 .emp_name_td {
 	width: 130px;
 	max-width: 130px;
 	white-space: nowrap;
 	overflow: hidden;
+	text-align: center;
 }

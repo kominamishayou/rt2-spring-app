@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{common/layout_4block :: layout(~{::body/content()})}">
+
+<head>
+	<title>社員一覧 | 社員管理システム</title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="admin user_list">
+
+<h1>テスト</h1>
+<h2>CSVで登録</h2>
+<form method="post"
+      th:action="@{/csv/import/regist}"
+      enctype="multipart/form-data">
+
+    <input type="file" name="file" accept=".csv">
+    <button type="submit">CSVアップロード</button>
+</form>
+</html>
+</body>
