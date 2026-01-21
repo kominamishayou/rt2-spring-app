@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jp.co.sss.crud.bean.EmployeeBean;
@@ -53,5 +55,14 @@ public class SearchForEmployeesByDepartmentService {
 		
 		return BeanManager.copyEntityListToBeanList(employeeList);
 	
+	}
+	
+	public Page<Employee> executeForPage(Pageable pageable, Integer deptId){
+		Page<Employee> employeeListPage = employeeRepository.findByDepartment(pageable, departmentRepository.getReferenceById(deptId));
+		if(employeeListPage.getContent().size() == 0) {
+			return Page.empty(pageable);
+		}
+		
+		return employeeListPage;
 	}
 }

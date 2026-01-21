@@ -1,0 +1,31 @@
+#employee-list {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+}
+
+#employee-list .list-body {
+	flex: 1;
+	min-height: 0;
+}
+
+#employee-list .pager {
+	font-size: 20px;
+	flex: 0 0 auto;
+	margin-top: auto;
+	border-top: 1px solid #ccc;
+	text-align: center;
+	padding-bottom: 50px;
+}
+
+#employee-list .pager .page-link {
+	font-size: 15px;
+}
+
+.emp_name_td {
+	width: 130px;
+	max-width: 130px;
+	white-space: nowrap;
+	overflow: hidden;
+}
