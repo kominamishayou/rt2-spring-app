@@ -37,7 +37,7 @@
 				<th th:unless="${session.loginUser.authority == 1}" class="button">削除</th>
 			</tr>
 			<tr th:each="employee: ${employees}">
-				<td th:text="${employee.empId}"></td>
+				<td th:text="${employee.empId}" style="text-align: center;"></td>
 				<td th:text="${employee.empName}" class="emp_name_td"></td>
 				<!--
 				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
