@@ -1,0 +1,22 @@
+.csv-input-table-tab {
+	display: flex;
+	flex-direction: row;
+}
+
+/* エラー欄の最大高さを決める */
+.error-box{
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+
+.error-list{
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+
+.error-list li{
+  overflow-wrap: break-word;
+}

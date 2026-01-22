@@ -8,41 +8,153 @@
 
 <body class="admin user_list">
 
-<h1>登録確認</h1>
-	<form th:action="@{/csv/improt/regist/check}" method="post" th:object="${employeeForm}">
+	<h1>登録確認</h1>
+	<form id="form" th:action="@{/csv/improt/regist/check}" method="post" th:object="${initialPasswordForm}">
+		<div class="form csv-pass-form">
+			<div class="label">初期パスワード：</div>
+
+			<div class="input required">
+				<input type="password" th:field="*{empPass}" />
+				<button type="button" onclick="changeType()" style="white-space: nowrap;">
+					表示切替
+				</button>
+				<th:block th:if="${#fields.hasErrors('empPass')}">
+					<br><span th:errors="*{empPass}" style="white-space: nowrap;"></span>
+				</th:block>
+				<span id="different_password_error_msg" style="display: none;">パスワードが確認欄と一致していません</span>
+			</div>
+
+		</div>
+		<div class="form" id="password_confirm" style="display: none;">
+			<div class="label">初期パスワード：確認</div>
+
+			<div class="input required">
+				<input type="password" id="password_confirm_input" />
+				<button type="button" onclick="changeTypeConfirm()" style="white-space: nowrap;">
+					表示切替
+				</button>
+			</div>
+		</div>
+
 		<div class="form">
-						<div class="label">初期パスワード：</div>
-
-						<div class="input required">
-							<input type="password" th:field="*{empPass}" />
-							<button type="button" onclick="changeType()" style="white-space: nowrap;">
-								表示切替
-							</button>
-							<th:block th:if="${#fields.hasErrors('empPass')}">
-								<br><span th:errors="*{empPass}" style="white-space: nowrap;"></span>
-							</th:block>
-							<span id="different_password_error_msg" style="display: none;">パスワードが確認欄と一致していません</span>
-						</div>
-
-					</div>
-					<div class="form" id="password_confirm" style="display: none;">
-						<div class="label">初期パスワード：確認</div>
-
-						<div class="input required">
-							<input type="password" id="password_confirm_input"/>
-							<button type="button" onclick="changeTypeConfirm()" style="white-space: nowrap;">
-								表示切替
-							</button>
-						</div>
-					</div>
-					
-					<div class="form">
-						<div class="label"></div>
-						<div class="input">
-							<input onclick="checkPassword()" type="button" value="登録"/>
-						</div>
-					</div>
+			<div class="label"></div>
+			<div class="input">
+				<input onclick="checkPassword()" type="button" value="登録" />
+			</div>
+		</div>
 	</form>
-</form>
-</html>
+	</form>
+
+	<div class="csv-input-table-tab">
+		<input class="show-valid-tab" type="button" value="登録できる社員データ">
+		<input class="show-invalid-tab" type="button" value="エラーがあった社員データ">
+	</div>
+	<div class="valid-table">
+
+		<div id="employee-list">
+			<!--	該当社員がいる場合-->
+			<table class="list_table">
+				<tr>
+					<th>社員名</th>
+					<th class="gender">性別</th>
+					<th class="address">住所</th>
+					<th class="birthday">生年月日</th>
+					<th class="authority">権限</th>
+					<th class="deptName">部署名</th>
+				</tr>
+				<tr th:each="entry: ${session.validFormMap}">
+					<td th:text="${entry.key.empName}" class="emp_name_td"></td>
+					<!--
+				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
+				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
+			-->
+					<td th:switch="${entry.key.gender}">
+						<span th:case="1">男性</span> <span th:case="2">女性</span>
+					</td>
+					<td th:text="${entry.key.address}"></td>
+					<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}"></td>
+					<td th:switch="${entry.key.authority}">
+						<span th:case="1">一般</span> <span th:case="2">管理者</span>
+					</td>
+					<td th:switch="${entry.key.deptId}">
+						<span th:case="1">営業部</span> <span th:case="2">経理部</span> <span th:case="3">総務部</span>
+					</td>
+				</tr>
+			</table>
+
+			<div class="csv-pager">
+				<button class="csv-page-link-prev">
+					Prev
+				</button>
+
+				<span class="csv-pager-countor-current"></span>
+				/
+				<span class="csv-pager-countor-total"></span>
+
+				<button class="csv-page-link-next">
+					Next
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!--エラーが出たデータリスト-->
+	<div class="invalid-table" style="display: none;">
+
+		<div id="employee-list">
+			<table class="list_table">
+				<tr>
+					<th>エラーメッセージ</th>
+					<th>社員名</th>
+					<th class="gender">性別</th>
+					<th class="address">住所</th>
+					<th class="birthday">生年月日</th>
+					<th class="authority">権限</th>
+					<th class="deptName">部署名</th>
+				</tr>
+				<tr th:each="entry: ${invalidFormMap}">
+					<td>
+					  <div class="error-box">
+						<ul>
+							<li th:each="v : ${entry.value}" th:text="${v.propertyPath + #strings.replace(v.message, '{0}', '')}">
+							</li>
+						</ul>
+					  </div>
+					</td>
+					<td th:text="${entry.key.empName}" class="emp_name_td"></td>
+					<!--
+				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
+				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
+			-->
+					<td th:switch="${entry.key.gender}">
+						<span th:case="1">男性</span> <span th:case="2">女性</span>
+					</td>
+					<td th:text="${entry.key.address}"></td>
+					<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}"></td>
+					<td th:switch="${entry.key.authority}">
+						<span th:case="1">一般</span> <span th:case="2">管理者</span>
+					</td>
+					<td th:switch="${entry.key.deptId}">
+						<span th:case="1">営業部</span> <span th:case="2">経理部</span> <span th:case="3">総務部</span>
+					</td>
+				</tr>
+			</table>
+
+			<div class="csv-pager">
+				<button class="csv-page-link-prev">
+					Prev
+				</button>
+
+				<span class="csv-pager-countor-current"></span>
+				/
+				<span class="csv-pager-countor-total"></span>
+
+				<button class="csv-page-link-next">
+					Next
+				</button>
+			</div>
+		</div>
+	</div>
 </body>
+
+</html>

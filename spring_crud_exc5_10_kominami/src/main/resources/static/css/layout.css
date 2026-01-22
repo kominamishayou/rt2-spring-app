@@ -108,6 +108,19 @@ aside select {
 aside input[type=submit] {
 	width: 50px;
 	margin-right: 5px;
+	white-space: normal;
+	overflow-wrap: break-word;
+}
+
+aside .csv-sidebar-form form{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+}
+
+aside .csv-import-menu {
+	text-align: center;
 }
 
 /* ---- メイン ---- */

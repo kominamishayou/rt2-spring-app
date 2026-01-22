@@ -6,11 +6,13 @@
 <link rel="stylesheet" type="text/css" th:href="@{/css/layout.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/css/stylesheet.css}" />
 <link rel="stylesheet" type="text/css" th:href="@{/css/list.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/css/csv.css}" />
 <script th:inline="javascript">
   const FRAGMENT_URL = /*[[@{/list/fragment}]]*/ "/list/fragment";
   const searchType = /*[[${searchType}]]*/ 1;
 </script>
 <script th:src="@{/js/employee-form.js}"></script>
+<script th:src="@{/js/csvCheckList.js}"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script th:src="@{/js/pagingList.js}"></script>
 <title>社員管理システム</title>

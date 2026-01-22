@@ -11,6 +11,13 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class EmployeeForm {
+	@Override
+	public String toString() {
+		return "EmployeeForm [empId=" + empId + ", empPass=" + empPass + ", empName=" + empName + ", gender=" + gender
+				+ ", address=" + address + ", birthday=" + birthday + ", authority=" + authority + ", deptId=" + deptId
+				+ "]";
+	}
+
 	/** 社員ID */
 	private Integer empId;
 

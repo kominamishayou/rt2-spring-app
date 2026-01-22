@@ -11,16 +11,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.opencsv.CSVReader;
 
-import jp.co.sss.crud.bean.EmployeeBean;
+import jp.co.sss.crud.form.EmployeeForm;
 
+/**
+ * Csv入力をBeanにパースするクラス
+ */
 @Service
 public class CsvParseService {
-	public List<EmployeeBean> execute(MultipartFile file) throws Exception {
-		List<EmployeeBean> employeeBeanList = new ArrayList<>();
-
+	public List<EmployeeForm> execute(MultipartFile file) throws Exception {
+		List<EmployeeForm> employeeFormList = new ArrayList<>();
+		
 		Charset cs = Charset.forName("MS932");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-
+		
 		try (CSVReader reader = new CSVReader(
 				new InputStreamReader(file.getInputStream(), Charset.forName("MS932")))) {
 			
@@ -28,20 +31,27 @@ public class CsvParseService {
 			
 			for (int i = 1; i < rows.size(); i++) {
 				String[] r = rows.get(i);
-				EmployeeBean e = new EmployeeBean();
-				e.setEmpId(Integer.parseInt(r[0]));
+				EmployeeForm e = new EmployeeForm();
+				try {
+					e.setEmpId(Integer.parseInt(r[0]));					
+				} catch(Exception err) {
+					e.setEmpId(null);										
+				}
 				e.setEmpName(r[1]);
 				e.setGender(strToGender(r[2]));
 				e.setAddress(r[3]);
-				e.setBirthday(sdf.parse(r[4]));
+				try {
+					e.setBirthday(sdf.parse(r[4]));					
+				} catch(Exception err) {
+					e.setBirthday(null);
+				}
 				e.setAuthority(strToAuthority(r[5]));
 				e.setDeptId(strToDeptId(r[6]));
-				e.setDeptName(r[6]);
-
-				employeeBeanList.add(e);
+				
+				employeeFormList.add(e);
 			}
 		}
-		return employeeBeanList;
+		return employeeFormList;
 	}
 	
 	private Integer strToGender(String s) {

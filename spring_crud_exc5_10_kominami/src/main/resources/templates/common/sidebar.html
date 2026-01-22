@@ -1,40 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8" />
+	<meta charset="UTF-8" />
 </head>
+
 <body>
-	<aside th:fragment="layout-sidebar" th:class="${session.user == null or session.user.authority == 2} ? ${'search'} : ${'admin_menu'}" >
-	  <div class="title">社員名検索</div>
-	  <div class="form">
-	    <form th:action="@{/list/empName}" method="get">
-	      <input type="text" name="empName" />
-	      <input type="submit" value="検索" />
-	    </form>
-	  </div>
-	  <div class="title">部署名検索</div>
-	  <div class="form">
-	    <form th:action="@{/list/deptId}" method="get">
+	<aside th:fragment="layout-sidebar"
+		th:class="${session.user == null or session.user.authority == 2} ? ${'search'} : ${'admin_menu'}">
+		<div class="title">社員名検索</div>
+		<div class="form">
+			<form th:action="@{/list/empName}" method="get">
+				<input type="text" name="empName" />
+				<input type="submit" value="検索" />
+			</form>
+		</div>
+		<div class="title">部署名検索</div>
+		<div class="form">
+			<form th:action="@{/list/deptId}" method="get">
 
-	     <span th:if="${selectedDeptId == null}">
-	      	<select name="deptId">
-	        	<option value="1"selected>営業部</option>
-	        	<option value="2">経理部</option>
-	        	<option value="3">総務部</option>
-	      	</select>
-	     </span>
+				<span th:if="${selectedDeptId == null}">
+					<select name="deptId">
+						<option value="1" selected>営業部</option>
+						<option value="2">経理部</option>
+						<option value="3">総務部</option>
+					</select>
+				</span>
 
-	     <span th:unless="${selectedDeptId == null}">
-	     	<select name="deptId">
-	      		<option value="1" th:selected="${selectedDeptId}== '1'">営業部</option>
-	        	<option value="2" th:selected="${selectedDeptId}== '2'">経理部</option>
-	       		<option value="3" th:selected="${selectedDeptId}== '3'">総務部</option>
-	      	</select>
-	     </span>
+				<span th:unless="${selectedDeptId == null}">
+					<select name="deptId">
+						<option value="1" th:selected="${selectedDeptId}== '1'">営業部</option>
+						<option value="2" th:selected="${selectedDeptId}== '2'">経理部</option>
+						<option value="3" th:selected="${selectedDeptId}== '3'">総務部</option>
+					</select>
+				</span>
 
-	     <input type="submit" value="検索" />
-	    </form>
-	  </div>
+				<input type="submit" value="検索" />
+			</form>
+		</div>
+
+		<div th:unless="${session.loginUser.authority == 1}" class="title">CSV出力</div>
+		<div th:unless="${session.loginUser.authority == 1}" class="form csv-sidebar-form">
+			<form th:action="@{/csv/export}" method="get">
+				<div class="radio">
+					
+					<label>
+						<input name="csvType" type="radio" value="1" />:全社員データ<br />
+					</label>
+					
+					<label>
+						<input name="csvType" type="radio" value="2" />:入力用サンプル
+					</label>
+				</div>
+				
+				<input type="submit" value="出力" style="height: 40px;" />
+			</form>
+		</div>
+		
+		<div th:unless="${session.loginUser.authority == 1}" class="title">CSV入力</div>
+		<div th:unless="${session.loginUser.authority == 1}" class="csv-import-menu">
+		<a th:href="@{/csv}">入力ページへ</a>
+		</div>
 	</aside>
 </body>
+
 </html>

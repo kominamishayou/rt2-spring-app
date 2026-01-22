@@ -4,21 +4,29 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
-import jakarta.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Valid;
 import jp.co.sss.crud.bean.EmployeeBean;
 import jp.co.sss.crud.form.EmployeeForm;
+import jp.co.sss.crud.form.InitialPasswordForm;
 import jp.co.sss.crud.service.CsvParseService;
+import jp.co.sss.crud.service.FilterEmployeeFormMapService;
 import jp.co.sss.crud.service.SearchAllEmployeesService;
-
+import jp.co.sss.crud.service.ValidationEmployeeFormListService;
 @Controller
 public class CsvController {
 	
@@ -27,6 +35,12 @@ public class CsvController {
 	
 	@Autowired
 	CsvParseService csvParseService;
+	
+	@Autowired
+	ValidationEmployeeFormListService validateFormList;
+	
+	@Autowired
+	FilterEmployeeFormMapService filterFormMapService;
 	
 	/**
 	 * CSVインポート、エクスポートページを表示
@@ -43,12 +57,15 @@ public class CsvController {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/csv/export", method = RequestMethod.GET)
-	public void downloadUserCsv(HttpServletResponse response) throws Exception {
+	public void downloadUserCsv(HttpServletResponse response, Integer csvType) throws Exception {
 		
 		//ヘッダ
 		response.setContentType("text/csv");
 		
-		response.setHeader("Content-Disposition", "attachment; filename=\"employeeList.csv\"");
+		switch(csvType) {
+		case 1: response.setHeader("Content-Disposition", "attachment; filename=\"employeeList.csv\""); break;
+		case 2: response.setHeader("Content-Disposition", "attachment; filename=\"sample.csv\""); break;
+		}
 		
 		Charset cs = Charset.forName("MS932");
 		
@@ -58,6 +75,24 @@ public class CsvController {
 		
 		try(PrintWriter writer = new PrintWriter(response.getOutputStream(), true, cs)) {
 			writer.println("社員ID,社員名,性別,住所,生年月日,権限,部署名");
+			
+			if(csvType.equals(2)) {
+				writer.print("更新の場合は該当社員のID 登録の場合は空欄");
+				writer.print(",");
+				writer.print("30文字まで");
+				writer.print(",");
+				writer.print("男性or女性");
+				writer.print(",");
+				writer.print("60文字まで");
+				writer.print(",");
+				writer.print("yyyy/MM/dd");
+				writer.print(",");
+				writer.print("一般or管理者");
+				writer.print(",");
+				writer.println("営業部or経理部or総務部");
+				writer.flush();
+				return;
+			}
 			
 			for (EmployeeBean e : employeeList) {
 				writer.print(e.getEmpId());
@@ -86,12 +121,35 @@ public class CsvController {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/csv/import/regist", method = RequestMethod.POST)
-	public String importCsv(MultipartFile file, @ModelAttribute EmployeeForm employeeForm) throws Exception {
-		List<EmployeeBean> employeeBeanList = csvParseService.execute(file);
-		for ( EmployeeBean e : employeeBeanList) {
+	public String importCsv(MultipartFile file, @ModelAttribute InitialPasswordForm initialPasswordForm,HttpSession session ,Model model) throws Exception {
+		List<EmployeeForm> employeeFormList = csvParseService.execute(file);
+		
+		//csvが取れてるか確認用
+		for ( EmployeeForm e : employeeFormList) {
 			System.out.println(e);
 		}
+		
+		Map<EmployeeForm, Set<ConstraintViolation<EmployeeForm>>> resultMap = validateFormList.execute(employeeFormList);
+		
+		Map<EmployeeForm, Set<ConstraintViolation<EmployeeForm>>> validMap = filterFormMapService.getValid(resultMap);
+		
+		Map<EmployeeForm, Set<ConstraintViolation<EmployeeForm>>> invalidMap = filterFormMapService.getInvalid(resultMap);
+		
+		session.setAttribute("validFormMap", validMap);
+		model.addAttribute("invalidFormMap", invalidMap);
+		
 		return "csv/csv_regist_input";
+	}
+	
+	@RequestMapping(path = "/csv/improt/regist/check", method = RequestMethod.POST)
+	public String showCsvCheck(@Valid @ModelAttribute InitialPasswordForm initialPasswordForm, 
+			BindingResult result,
+			HttpSession session) {
+		if(result.hasErrors()) {
+			return "csv/csv_regist_input";
+		}
+		session.setAttribute("empPass", initialPasswordForm.getEmpPass());
+		return "csv/csv_regist_check";
 	}
 	
 	/**
