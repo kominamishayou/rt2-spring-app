@@ -8,8 +8,8 @@
 
 <body class="admin user_list">
 
-	<h1>【CSV入力】社員登録画面</h1>
-	<form id="form" th:action="@{/csv/import/regist/check}" method="post" th:object="${initialPasswordForm}">
+	<h1>【CSV入力】社員更新画面</h1>
+	<form id="form" th:action="@{/csv/import/update/check}" method="post" th:object="${initialPasswordForm}">
 		<div class="form csv-pass-form">
 			<div class="label">初期パスワード：</div>
 
@@ -55,6 +55,7 @@
 			<!--	該当社員がいる場合-->
 			<table class="list_table">
 				<tr>
+					<th>社員ID</th>
 					<th>社員名</th>
 					<th class="gender">性別</th>
 					<th class="address">住所</th>
@@ -63,6 +64,7 @@
 					<th class="deptName">部署名</th>
 				</tr>
 				<tr th:each="entry: ${session.validFormMap}">
+					<td th:text="${entry.key.empId}" class="emp-id-td"></td>
 					<td th:text="${entry.key.empName}" class="emp_name_td"></td>
 					<!--
 				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
@@ -105,6 +107,7 @@
 			<table class="list_table">
 				<tr>
 					<th>エラーメッセージ</th>
+					<th>社員ID</th>
 					<th>社員名</th>
 					<th class="gender">性別</th>
 					<th class="address">住所</th>
@@ -121,6 +124,7 @@
 						</ul>
 					  </div>
 					</td>
+					<td th:text="${entry.key.empId}" class="emp-id-td"></td>
 					<td th:text="${entry.key.empName}" class="emp_name_td"></td>
 					<!--
 				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる

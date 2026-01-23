@@ -1,13 +1,16 @@
 package jp.co.sss.crud.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jp.co.sss.crud.form.EmployeeForm;
+import jp.co.sss.crud.form.EmployeeFormForCsvUpdate;
 import jp.co.sss.crud.repository.EmployeeRepository;
 import jp.co.sss.crud.util.BeanManager;
-
 /**
  * 従業員更新サービスクラス。
  * フォームから入力された従業員情報を基に、既存の従業員情報をデータベース上で更新します。
@@ -44,5 +47,52 @@ public class UpdateEmployeeService {
 		employeeForm.setEmpPass(passwordEncoder.encode(employeeForm.getEmpPass()));
 		employeeRepository.save(BeanManager.copyFormToEntity(employeeForm));
 		return;
+	}
+	
+	public void executeForCsv(List<EmployeeFormForCsvUpdate> employeeFormForUpdateCsvList, String initialPassword) {
+		setInitialPassword(employeeFormForUpdateCsvList, initialPassword);
+		
+		List<EmployeeForm> employeeFormList = mappingToEmployeeForm(employeeFormForUpdateCsvList);
+		
+		for(EmployeeForm e : employeeFormList) {
+			execute(e);
+		}
+	}
+	
+	/**
+	 * 初期パスワードをセット
+	 * @param employeeFormList
+	 * @param initialPassword
+	 */
+	public void setInitialPassword(List<EmployeeFormForCsvUpdate> employeeFormList, String initialPassword) {
+		for (EmployeeFormForCsvUpdate e : employeeFormList) {
+			e.setEmpPass(initialPassword);
+		}
+	}
+	
+	/**
+	 * CSV用Formリストを更新処理用Formリストへマッピング
+	 * @param employeeFormList
+	 * @return
+	 */
+	public List<EmployeeForm> mappingToEmployeeForm(List<EmployeeFormForCsvUpdate> employeeFormList) {
+		List<EmployeeForm> resultList = new ArrayList<>();
+		
+		for(EmployeeFormForCsvUpdate e : employeeFormList) {
+			EmployeeForm target = new EmployeeForm();
+			
+			target.setEmpId(e.getEmpId());
+			target.setEmpName(e.getEmpName());
+			target.setEmpPass(e.getEmpPass());
+			target.setGender(e.getGender());
+			target.setAddress(e.getAddress());
+			target.setBirthday(e.getBirthday());
+			target.setAuthority(e.getAuthority());
+			target.setDeptId(e.getDeptId());
+			
+			resultList.add(target);
+		}
+		
+		return resultList;
 	}
 }

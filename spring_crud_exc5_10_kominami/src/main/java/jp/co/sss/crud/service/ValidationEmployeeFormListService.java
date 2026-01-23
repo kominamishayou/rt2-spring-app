@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jp.co.sss.crud.form.EmployeeForm;
+import jp.co.sss.crud.form.EmployeeFormForCsvUpdate;
 @Service
 public class ValidationEmployeeFormListService {
 	
@@ -34,7 +35,26 @@ public class ValidationEmployeeFormListService {
 		return resultMap;
 	}
 	
+	public Map<EmployeeFormForCsvUpdate, Set<ConstraintViolation<EmployeeFormForCsvUpdate>>> executeForUpdate(List<EmployeeFormForCsvUpdate> employeeFormList){
+		Map<EmployeeFormForCsvUpdate, Set<ConstraintViolation<EmployeeFormForCsvUpdate>>> resultMap = new HashMap<>();
+		
+		for (EmployeeFormForCsvUpdate e : employeeFormList) {
+			//ダミーパスワードをセット バリデーション対策
+			e.setEmpPass("1111");
+			
+			Set<ConstraintViolation<EmployeeFormForCsvUpdate>> resultSet = validateForUpate(e);
+			resultMap.put(e, resultSet);
+		}
+		
+		return resultMap;
+	}
+	
 	public Set<ConstraintViolation<EmployeeForm>> validate(EmployeeForm form){
 		return validator.validate(form);
 	}
+	
+	public Set<ConstraintViolation<EmployeeFormForCsvUpdate>> validateForUpate(EmployeeFormForCsvUpdate form){
+		return validator.validate(form);
+	}
+	
 }

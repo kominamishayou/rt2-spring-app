@@ -8,8 +8,8 @@
 
 <body class="admin user_list">
 
-<h1>テスト</h1>
-<h2>CSVで登録</h2>
+<h2>【CSV入力】ファイルアップロード画面</h2>
+<h3>登録</h3>
 <form method="post"
       th:action="@{/csv/import/regist}"
       enctype="multipart/form-data">
@@ -18,5 +18,13 @@
     <button type="submit">CSVアップロード</button>
 </form>
 
+<h3>更新</h3>
+<form method="post"
+      th:action="@{/csv/import/update}"
+      enctype="multipart/form-data">
+
+    <input type="file" name="file" accept=".csv">
+    <button type="submit">CSVアップロード</button>
+</form>
 </body>
 </html>

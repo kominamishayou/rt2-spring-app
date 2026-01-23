@@ -3,6 +3,7 @@ package jp.co.sss.crud.controller;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,10 +23,13 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import jp.co.sss.crud.bean.EmployeeBean;
 import jp.co.sss.crud.form.EmployeeForm;
+import jp.co.sss.crud.form.EmployeeFormForCsvUpdate;
 import jp.co.sss.crud.form.InitialPasswordForm;
 import jp.co.sss.crud.service.CsvParseService;
 import jp.co.sss.crud.service.FilterEmployeeFormMapService;
+import jp.co.sss.crud.service.RegisterEmployeeService;
 import jp.co.sss.crud.service.SearchAllEmployeesService;
+import jp.co.sss.crud.service.UpdateEmployeeService;
 import jp.co.sss.crud.service.ValidationEmployeeFormListService;
 @Controller
 public class CsvController {
@@ -41,6 +45,12 @@ public class CsvController {
 	
 	@Autowired
 	FilterEmployeeFormMapService filterFormMapService;
+	
+	@Autowired
+	RegisterEmployeeService registEmployeeService;
+	
+	@Autowired
+	UpdateEmployeeService updateEmployeeService;
 	
 	/**
 	 * CSVインポート、エクスポートページを表示
@@ -121,13 +131,8 @@ public class CsvController {
 	 * @throws Exception
 	 */
 	@RequestMapping(path = "/csv/import/regist", method = RequestMethod.POST)
-	public String importCsv(MultipartFile file, @ModelAttribute InitialPasswordForm initialPasswordForm,HttpSession session ,Model model) throws Exception {
+	public String importRegistCsv(MultipartFile file, @ModelAttribute InitialPasswordForm initialPasswordForm,HttpSession session ,Model model) throws Exception {
 		List<EmployeeForm> employeeFormList = csvParseService.execute(file);
-		
-		//csvが取れてるか確認用
-		for ( EmployeeForm e : employeeFormList) {
-			System.out.println(e);
-		}
 		
 		Map<EmployeeForm, Set<ConstraintViolation<EmployeeForm>>> resultMap = validateFormList.execute(employeeFormList);
 		
@@ -141,8 +146,15 @@ public class CsvController {
 		return "csv/csv_regist_input";
 	}
 	
-	@RequestMapping(path = "/csv/improt/regist/check", method = RequestMethod.POST)
-	public String showCsvCheck(@Valid @ModelAttribute InitialPasswordForm initialPasswordForm, 
+	/**
+	 * 登録内容確認画面を表示
+	 * @param initialPasswordForm
+	 * @param result
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(path = "/csv/import/regist/check", method = RequestMethod.POST)
+	public String showRegistCsvCheck(@Valid @ModelAttribute InitialPasswordForm initialPasswordForm, 
 			BindingResult result,
 			HttpSession session) {
 		if(result.hasErrors()) {
@@ -150,6 +162,68 @@ public class CsvController {
 		}
 		session.setAttribute("empPass", initialPasswordForm.getEmpPass());
 		return "csv/csv_regist_check";
+	}
+	
+	@RequestMapping(path = "/csv/import/regist/complete")
+	public String showRegistComplete(HttpSession session) {
+		Map<EmployeeForm, Set<ConstraintViolation<EmployeeForm>>> validForMap =
+				(Map<EmployeeForm, Set<ConstraintViolation<EmployeeForm>>>)
+				session.getAttribute("validFormMap");
+		
+		List<EmployeeForm> employeeFormList = new ArrayList<>(validForMap.keySet());
+		
+		String empPass = (String)session.getAttribute("empPass");
+		
+		registEmployeeService.executeFromCsv(employeeFormList, empPass);
+		
+		session.removeAttribute("validFormMap");
+		session.removeAttribute("empPass");
+		return "regist/regist_complete";
+	}
+	
+	@RequestMapping(path = "/csv/import/update", method = RequestMethod.POST)
+	public String showUpdateCsvInput (MultipartFile file, @ModelAttribute InitialPasswordForm initialPasswordForm,
+			HttpSession session ,Model model) throws Exception {
+		List<EmployeeFormForCsvUpdate> employeeFormList = csvParseService.executeForUpdate(file);
+		
+		Map<EmployeeFormForCsvUpdate, Set<ConstraintViolation<EmployeeFormForCsvUpdate>>> resultMap = validateFormList.executeForUpdate(employeeFormList);
+		
+		Map<EmployeeFormForCsvUpdate, Set<ConstraintViolation<EmployeeFormForCsvUpdate>>>  validMap = filterFormMapService.getValidForUpdate(resultMap);
+		
+		Map<EmployeeFormForCsvUpdate, Set<ConstraintViolation<EmployeeFormForCsvUpdate>>>  invalidMap = filterFormMapService.getInvalidForUpdate(resultMap);
+		
+		session.setAttribute("validFormMap", validMap);
+		model.addAttribute("invalidFormMap", invalidMap);
+		
+		return "csv/csv_update_input";
+	}
+	
+	@RequestMapping(path = "/csv/import/update/check", method = RequestMethod.POST)
+	public String showUpdateCsvCheck(@Valid @ModelAttribute InitialPasswordForm initialPasswordForm,
+			BindingResult result,
+			HttpSession session) {
+		if(result.hasErrors()) {
+			return "csv/csv_regist_input";
+		}
+		session.setAttribute("empPass", initialPasswordForm.getEmpPass());
+		return "csv/csv_update_check";
+	}
+	
+	@RequestMapping(path = "/csv/import/update/complete", method = RequestMethod.POST)
+	public String showUpdateComplete(HttpSession session) {
+		Map<EmployeeFormForCsvUpdate, Set<ConstraintViolation<EmployeeFormForCsvUpdate>>> validForMap =
+				(Map<EmployeeFormForCsvUpdate, Set<ConstraintViolation<EmployeeFormForCsvUpdate>>>)
+				session.getAttribute("validFormMap");
+		
+		List<EmployeeFormForCsvUpdate> employeeFormList = new ArrayList<>(validForMap.keySet());
+		
+		String empPass = (String)session.getAttribute("empPass");
+		
+		updateEmployeeService.executeForCsv(employeeFormList, empPass);
+		
+		session.removeAttribute("validFormMap");
+		session.removeAttribute("empPass");
+		return "update/update_complete";
 	}
 	
 	/**
