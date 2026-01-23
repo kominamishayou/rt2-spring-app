@@ -104,7 +104,7 @@
 	<div class="invalid-table" style="display: none;">
 
 		<div id="employee-list">
-			<table class="list_table">
+			<table class="list_table invalid-table">
 				<tr>
 					<th>エラーメッセージ</th>
 					<th>社員ID</th>
@@ -124,21 +124,21 @@
 						</ul>
 					  </div>
 					</td>
-					<td th:text="${entry.key.empId}" class="emp-id-td"></td>
-					<td th:text="${entry.key.empName}" class="emp_name_td"></td>
+					<td th:text="${entry.key.empId}" class="emp-id-td check-td"></td>
+					<td th:text="${entry.key.empName}" class="emp_name_td check-td"></td>
 					<!--
 				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
 				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
 			-->
-					<td th:switch="${entry.key.gender}">
+					<td th:switch="${entry.key.gender}" class="gender-td check-td">
 						<span th:case="1">男性</span> <span th:case="2">女性</span>
 					</td>
-					<td th:text="${entry.key.address}"></td>
-					<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}"></td>
-					<td th:switch="${entry.key.authority}">
+					<td th:text="${entry.key.address}" class="address-td check-td"></td>
+					<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}" class="birthday-td check-td"></td>
+					<td th:switch="${entry.key.authority}" class="authority-td check-td">
 						<span th:case="1">一般</span> <span th:case="2">管理者</span>
 					</td>
-					<td th:switch="${entry.key.deptId}">
+					<td th:switch="${entry.key.deptId}" class="dept-name-td check-td">
 						<span th:case="1">営業部</span> <span th:case="2">経理部</span> <span th:case="3">総務部</span>
 					</td>
 				</tr>

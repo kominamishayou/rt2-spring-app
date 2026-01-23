@@ -24,7 +24,8 @@ public class AuthorityCheckFilter extends HttpFilter {
 		String requestURL = request.getRequestURI();
 
 		if(requestURL.contains("/regist") ||
-				requestURL.contains("/delete")) {
+		   requestURL.contains("/delete") ||
+		   requestURL.contains("/csv")	) {
 			HttpSession session = request.getSession();
 			EmployeeBean loginUser = (EmployeeBean)session.getAttribute("loginUser");
 			if( (loginUser.getAuthority().equals(Constant.DEFAULT_AUTHORITY))) {

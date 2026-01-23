@@ -31,13 +31,14 @@ public class IndexController {
 			BindingResult result
 			,Model model, HttpSession session) {
 
-		String path = "index";
-
-		LoginResultBean loginResultBean = loginService.execute(loginForm);
-		
 		if(result.hasErrors()) {
 			return "index";
 		}
+		
+		String path = "index";
+		
+		LoginResultBean loginResultBean = loginService.execute(loginForm);
+		
 
 		if (loginResultBean.isLogin()) {
 			session.setAttribute("loginUser", loginResultBean.getLoginUser());

@@ -64,5 +64,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	$(".show-valid-tab").on("click", showValidTable);
 	$(".show-invalid-tab").on("click", showInalidTable);
-	
+
+
+	//nullセルの背景色を変える
+	const $invalidTable = $(".invalid-table");
+	const $checkTdList = $invalidTable.find(".check-td");
+
+	const checkTd = function() {
+		const $td = $(this)
+
+		if ($td.text().trim() === '') {
+			$td.css('background-color', 'red');
+			$td.css('opacity', '0.25');
+		}
+	};
+
+	const allCheckTd = function() {
+		$checkTdList.each(checkTd);
+	}
+
+	allCheckTd();
 });
