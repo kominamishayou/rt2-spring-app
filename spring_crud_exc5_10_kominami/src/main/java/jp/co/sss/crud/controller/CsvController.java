@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,7 +74,7 @@ public class CsvController {
 		response.setContentType("text/csv");
 		
 		switch(csvType) {
-		case 1: response.setHeader("Content-Disposition", "attachment; filename=\"employeeList.csv\""); break;
+		case 1: response.setHeader("Content-Disposition", "attachment; filename=\"list" + getNowDateStr() + ".csv\""); break;
 		case 2: response.setHeader("Content-Disposition", "attachment; filename=\"sample.csv\""); break;
 		}
 		
@@ -82,6 +83,8 @@ public class CsvController {
 		List<EmployeeBean> employeeList = searchAllEmployeesService.execute();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		
+		
 		
 		try(PrintWriter writer = new PrintWriter(response.getOutputStream(), true, cs)) {
 			writer.println("社員ID,社員名,性別,住所,生年月日,権限,部署名");
@@ -262,5 +265,11 @@ public class CsvController {
     	}
     	
     	return "";
+    }
+    
+    private String getNowDateStr() {
+    	Date now = new Date();
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd");
+    	return sdf.format(now);
     }
 }

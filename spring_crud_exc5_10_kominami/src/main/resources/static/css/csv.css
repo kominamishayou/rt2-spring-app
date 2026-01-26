@@ -1,22 +1,81 @@
+/*タイトル*/
+h1.csv-input-title {
+	margin-bottom: 0;
+	margin-top: 0.1em;
+}
+
+/*サンプルCSVdownloadメニュー*/
+.sample-csv-form {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+/*エラーメッセージ*/
+p.csv-err-msg {
+	margin-bottom: 0.7em;
+	margin-top: 0.3em;
+}
+
+/* テーブル表示切替ボタン*/
 .csv-input-table-tab {
 	display: flex;
 	flex-direction: row;
+	margin: 0 auto;
+	gap: 10px;
+}
+
+.csv-input-table-tab input {
+	font-size: 15px;
+	padding: 5px 15px;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	background: none;
+	border: none;
+	box-shadow: none;
+	margin-bottom: 15px;
+	margin-top: 1em;
+	font-weight: bold;
+	background-color: rgba(173, 216, 230, 0.);
+	border: solid 1px;
+}
+
+.csv-input-table-tab input:hover {
+	background-color: rgba(173, 216, 230, 0.2);
+}
+
+/*テーブル*/
+.csv-table-wrapper {
+	height: 12rem;
 }
 
 /* エラー欄の最大高さを決める */
-.error-box{
-  max-height: 80px;
-  overflow-y: auto;
+.error-box {
+	max-height: 80px;
+	overflow-y: auto;
 }
 
 
-.error-list{
-  list-style: none;
-  margin: 0;
-  padding-left: 0;
+.error-list {
+	list-style: none;
+	margin: 0;
+	padding-left: 0;
 }
 
 
-.error-list li{
-  overflow-wrap: break-word;
+.error-list li {
+	overflow-wrap: break-word;
+}
+
+/*ページャー*/
+.csv-pager {
+	margin: 0 auto;
+}
+
+/*初期パスワード入力フォーム*/
+.csv-pass-form {
+	border-top: solid 1px;
+	margin-top: 15px;
+	padding-top: 20px;
 }

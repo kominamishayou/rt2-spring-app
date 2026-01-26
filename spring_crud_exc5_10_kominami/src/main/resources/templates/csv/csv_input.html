@@ -9,6 +9,16 @@
 <body class="admin user_list">
 
 <h2>【CSV入力】ファイルアップロード画面</h2>
+<div class="sample-csv-form">
+<h4>入力用サンプルCSV</h4>
+<form method="get"
+      th:action="@{/csv/export?csvType=2}"
+      enctype="multipart/form-data">
+
+    <button type="submit">ダウンロード</button>
+</form>
+</div>
+
 <h3>登録</h3>
 <form method="post"
       th:action="@{/csv/import/regist}"
@@ -26,5 +36,9 @@
     <input type="file" name="file" accept=".csv">
     <button type="submit">CSVアップロード</button>
 </form>
+
+
+
+
 </body>
 </html>

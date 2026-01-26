@@ -12,6 +12,7 @@ body {
 
 html, body {
 	height: 100%;
+	min-width: max-content;
 }
 
 .content {
@@ -43,6 +44,7 @@ header {
 	width: 100%;
 	background-color: #87CEEB;
 	padding-top: 10px;
+	min-width: max-content;
 }
 
 header.admin-style {
@@ -75,7 +77,7 @@ header .user_info a {
 
 /* ---- サイドバー ---- */
 aside {
-	width: 200px;
+	width: 13em;
 }
 
 aside .title {
@@ -101,15 +103,14 @@ aside input[type=text] {
 
 aside select {
 	margin: 0px 10px 0px 0px;
-	vertical-align: middle;
-	width: 110px;
+	width: 8.85em;
+	display: block;
+	height: 1.6em;
 }
 
 aside input[type=submit] {
-	width: 50px;
+	width: 4em;
 	margin-right: 5px;
-	white-space: normal;
-	overflow-wrap: break-word;
 }
 
 aside .csv-sidebar-form form{
@@ -119,8 +120,38 @@ aside .csv-sidebar-form form{
 	gap: 10px;
 }
 
-aside .csv-import-menu {
-	text-align: center;
+
+
+.sidebar-form form {
+    width: 12em;
+    display: flex;
+    justify-content: space-between;
+    height: 1.4em;
+    align-items: flex-end;
+}
+
+
+.csv-actions div{
+    width: 12em;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    gap: 0.5em;
+}
+
+.csv-actions .btn {
+  display: inline-block;
+  padding: 0.2em;
+  border: 1px solid #808080;
+  border-radius: 6px;
+  text-decoration: none;
+  color: inherit;
+  width: 12em;
+  font-size: 0.8em;
+}
+
+.csv-actions .btn:hover {
+    background-color: rgba(200, 200, 200, 0.3);
 }
 
 /* ---- メイン ---- */

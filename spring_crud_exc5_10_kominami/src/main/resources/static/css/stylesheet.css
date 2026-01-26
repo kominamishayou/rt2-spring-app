@@ -140,7 +140,7 @@ div.message {
 }
 
 /* ---- ボタン全般 ---- */
-input[type=submit] {
+input[type=submit], input[type=button], button {
 	border-width: 1px;
 	border-style: solid;
 	border-color: #808080;

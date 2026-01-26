@@ -8,9 +8,132 @@
 
 <body class="admin user_list">
 
-	<h1>【CSV入力】社員登録画面</h1>
-	<form id="form" th:action="@{/csv/import/regist/check}" method="post" th:object="${initialPasswordForm}">
-		<div class="form csv-pass-form">
+	<h1 class="csv-input-title">【CSV入力】社員登録画面</h1>
+
+	<!--	テーブル切替タブ-->
+	<div class="csv-input-table-tab">
+		<input class="show-valid-tab" type="button" value="登録できる社員データ">
+		<input th:unless="${#maps.isEmpty(invalidFormMap)}" class="show-invalid-tab" type="button" value="エラーがあった社員データ">
+	</div>
+
+	<!--	正常値テーブル-->
+	<div class="valid-table" th:fragment="valid-table">
+
+		<div id="employee-list">
+			<div class="csv-table-wrapper">
+
+				<!--	該当社員がいる場合-->
+				<table class="list_table csv-list-table">
+					<tr>
+						<th>社員名</th>
+						<th class="gender">性別</th>
+						<th class="address">住所</th>
+						<th class="birthday">生年月日</th>
+						<th class="authority">権限</th>
+						<th class="deptName">部署名</th>
+					</tr>
+					<tr th:each="entry: ${session.validFormMap}">
+						<td th:text="${entry.key.empName}" class="emp_name_td"></td>
+						<!--
+				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
+				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
+			-->
+						<td th:switch="${entry.key.gender}">
+							<span th:case="1">男性</span> <span th:case="2">女性</span>
+						</td>
+						<td th:text="${entry.key.address}"></td>
+						<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}"></td>
+						<td th:switch="${entry.key.authority}">
+							<span th:case="1">一般</span> <span th:case="2">管理者</span>
+						</td>
+						<td th:switch="${entry.key.deptId}">
+							<span th:case="1">営業部</span> <span th:case="2">経理部</span> <span th:case="3">総務部</span>
+						</td>
+					</tr>
+				</table>
+
+			</div>
+			<div class="csv-pager">
+				<button class="csv-page-link-prev">
+					Prev
+				</button>
+
+				<span class="csv-pager-countor-current"></span>
+				/
+				<span class="csv-pager-countor-total"></span>
+
+				<button class="csv-page-link-next">
+					Next
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!--エラーテーブル-->
+	<div th:unless="${#maps.isEmpty(invalidFormMap)}" class="invalid-table" style="display: none;">
+
+		<div id="employee-list">
+			<div class="csv-table-wrapper">
+
+				<table class="list_table csv-list-table">
+					<tr>
+						<th>エラーメッセージ</th>
+						<th>社員名</th>
+						<th class="gender">性別</th>
+						<th class="address">住所</th>
+						<th class="birthday">生年月日</th>
+						<th class="authority">権限</th>
+						<th class="deptName">部署名</th>
+					</tr>
+					<tr th:each="entry: ${invalidFormMap}">
+						<td>
+							<div class="error-box">
+								<ul>
+									<li th:each="v : ${entry.value}"
+										th:text="${v.propertyPath + #strings.replace(v.message, '{0}', '')}">
+									</li>
+								</ul>
+							</div>
+						</td>
+						<td th:text="${entry.key.empName}" class="emp_name_td cheack-td"></td>
+						<!--
+				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
+				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
+			-->
+						<td th:switch="${entry.key.gender}" class="check-td">
+							<span th:case="1">男性</span> <span th:case="2">女性</span>
+						</td>
+						<td th:text="${entry.key.address}" class="check-td"></td>
+						<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}" class="check-td"></td>
+						<td th:switch="${entry.key.authority}" class="check-td">
+							<span th:case="1">一般</span> <span th:case="2">管理者</span>
+						</td>
+						<td th:switch="${entry.key.deptId}" class="check-td">
+							<span th:case="1">営業部</span> <span th:case="2">経理部</span> <span th:case="3">総務部</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="csv-pager">
+				<button class="csv-page-link-prev">
+					Prev
+				</button>
+
+				<span class="csv-pager-countor-current"></span>
+				/
+				<span class="csv-pager-countor-total"></span>
+
+				<button class="csv-page-link-next">
+					Next
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<form id="form" class="csv-pass-form" th:action="@{/csv/import/regist/check}" method="post"
+		th:object="${initialPasswordForm}">
+		<div class="form">
 			<div class="label">初期パスワード：</div>
 
 			<div class="input required">
@@ -43,118 +166,6 @@
 			</div>
 		</div>
 	</form>
-	</form>
-
-	<div class="csv-input-table-tab">
-		<input class="show-valid-tab" type="button" value="登録できる社員データ">
-		<input class="show-invalid-tab" type="button" value="エラーがあった社員データ">
-	</div>
-	<div class="valid-table"  th:fragment="valid-table">
-
-		<div id="employee-list">
-			<!--	該当社員がいる場合-->
-			<table class="list_table">
-				<tr>
-					<th>社員名</th>
-					<th class="gender">性別</th>
-					<th class="address">住所</th>
-					<th class="birthday">生年月日</th>
-					<th class="authority">権限</th>
-					<th class="deptName">部署名</th>
-				</tr>
-				<tr th:each="entry: ${session.validFormMap}">
-					<td th:text="${entry.key.empName}" class="emp_name_td"></td>
-					<!--
-				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
-				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
-			-->
-					<td th:switch="${entry.key.gender}">
-						<span th:case="1">男性</span> <span th:case="2">女性</span>
-					</td>
-					<td th:text="${entry.key.address}"></td>
-					<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}"></td>
-					<td th:switch="${entry.key.authority}">
-						<span th:case="1">一般</span> <span th:case="2">管理者</span>
-					</td>
-					<td th:switch="${entry.key.deptId}">
-						<span th:case="1">営業部</span> <span th:case="2">経理部</span> <span th:case="3">総務部</span>
-					</td>
-				</tr>
-			</table>
-
-			<div class="csv-pager">
-				<button class="csv-page-link-prev">
-					Prev
-				</button>
-
-				<span class="csv-pager-countor-current"></span>
-				/
-				<span class="csv-pager-countor-total"></span>
-
-				<button class="csv-page-link-next">
-					Next
-				</button>
-			</div>
-		</div>
-	</div>
-
-	<!--エラーが出たデータリスト-->
-	<div class="invalid-table" style="display: none;">
-
-		<div id="employee-list">
-			<table class="list_table">
-				<tr>
-					<th>エラーメッセージ</th>
-					<th>社員名</th>
-					<th class="gender">性別</th>
-					<th class="address">住所</th>
-					<th class="birthday">生年月日</th>
-					<th class="authority">権限</th>
-					<th class="deptName">部署名</th>
-				</tr>
-				<tr th:each="entry: ${invalidFormMap}">
-					<td>
-					  <div class="error-box">
-						<ul>
-							<li th:each="v : ${entry.value}" th:text="${v.propertyPath + #strings.replace(v.message, '{0}', '')}">
-							</li>
-						</ul>
-					  </div>
-					</td>
-					<td th:text="${entry.key.empName}" class="emp_name_td"></td>
-					<!--
-				th:switchとth:caseはJavaのswitch文の様に条件分岐を表現できる
-				この場合はgender=1の場合[男性]、gender=2の場合[女性]と表示される
-			-->
-					<td th:switch="${entry.key.gender}">
-						<span th:case="1">男性</span> <span th:case="2">女性</span>
-					</td>
-					<td th:text="${entry.key.address}"></td>
-					<td th:text="${#dates.format(entry.key.birthday, 'yyyy/MM/dd')}"></td>
-					<td th:switch="${entry.key.authority}">
-						<span th:case="1">一般</span> <span th:case="2">管理者</span>
-					</td>
-					<td th:switch="${entry.key.deptId}">
-						<span th:case="1">営業部</span> <span th:case="2">経理部</span> <span th:case="3">総務部</span>
-					</td>
-				</tr>
-			</table>
-
-			<div class="csv-pager">
-				<button class="csv-page-link-prev">
-					Prev
-				</button>
-
-				<span class="csv-pager-countor-current"></span>
-				/
-				<span class="csv-pager-countor-total"></span>
-
-				<button class="csv-page-link-next">
-					Next
-				</button>
-			</div>
-		</div>
-	</div>
 </body>
 
 </html>
