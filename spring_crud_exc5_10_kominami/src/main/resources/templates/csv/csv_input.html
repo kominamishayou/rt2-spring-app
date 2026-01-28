@@ -12,8 +12,9 @@
 <div class="sample-csv-form">
 <h4>入力用サンプルCSV</h4>
 <form method="get"
-      th:action="@{/csv/export?csvType=2}"
+      th:action="@{/csv/export}"
       enctype="multipart/form-data">
+      <input type="hidden" value="2" name="csvType" />
 
     <button type="submit">ダウンロード</button>
 </form>
