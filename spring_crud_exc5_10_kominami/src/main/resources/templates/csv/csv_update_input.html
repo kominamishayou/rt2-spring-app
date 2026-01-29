@@ -12,7 +12,7 @@
 
 <!--テーブル切替タブ-->
 	<div class="csv-input-table-tab">
-		<input class="show-valid-tab" type="button" value="登録できる社員データ">
+		<input class="show-valid-tab" type="button" value="更新できる社員データ">
 		<input th:unless="${#maps.isEmpty(invalidFormMap)}" class="show-invalid-tab" type="button" value="エラーがあった社員データ">
 	</div>
 	<div class="valid-table"  th:fragment="valid-table">
